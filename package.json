@@ -1,7 +1,7 @@
 {
   "name": "express-ipn",
   "version": "1.0.1",
-  "description": "Create a PayPal IPN listener in minutes with this easy-to-use Express middleware.",
+  "description": "Simple Express middleware for creating an IPN listener.",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
