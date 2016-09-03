@@ -9,20 +9,15 @@ var app = express();
 app.use(logger('dev'));
 app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({extended: false}));
-app.post('/', ipn.validator(validationComplete));
+app.post('/', ipn.validator(validationHandler));
 
-function validationComplete(err, ipnContent) {
+function validationHandler(err, ipnContent) {
     if (err) {
         console.error("IPN INVALID");
     } else {
         console.log(ipnContent);
     }
 }
-
-app.post('/', function(req) {
-    console.log(res.ipnValid);
-    console.log(res.ipn);
-});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
