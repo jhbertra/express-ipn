@@ -71,7 +71,7 @@ describe('Express IPN', function () {
             callbackStub = sinon.stub();
 
             req = {
-                body: ''
+                body: {}
             };
             res = {
                 sendStatus: sendStatusStub
@@ -90,7 +90,7 @@ describe('Express IPN', function () {
             request.on.reset();
             request.end.reset();
             response.on.reset();
-            req.body = '';
+            req.body = {};
         });
 
         after(function () {
@@ -103,7 +103,8 @@ describe('Express IPN', function () {
         }
 
         it('Should be a closure', function () {
-            expect(typeof ipn.validator(function () { })).to.equal('function');
+            expect(typeof ipn.validator(function () {
+            })).to.equal('function');
         });
 
         it('Not return a middleware if the callback is not defined', function () {
@@ -120,7 +121,9 @@ describe('Express IPN', function () {
         });
 
         it('Should call the callback with an error if the ipn is a test one and production mode is on.', function () {
-            req.body = 'test_ipn=1';
+            req.body = {
+                test_ipn: '1'
+            };
             run(true);
             expect(callbackStub.getCall(0).args[0].message).to.equal("Production mode is on, cannot handle sandbox IPNs.");
         });
@@ -141,7 +144,9 @@ describe('Express IPN', function () {
         });
 
         it('Should make the request to www.sandbox.paypal.com if the ipn is a test one', function () {
-            req.body = 'test_ipn=1';
+            req.body = {
+                test_ipn: '1'
+            };
             run(false);
             expect(requestStub.getCall(0).args[0].host).to.equal('www.sandbox.paypal.com');
         });
@@ -161,15 +166,15 @@ describe('Express IPN', function () {
             expect(requestStub.getCall(0).args[0].headers['Content-Length']).to.equal('&cmd=_notify-validate'.length);
         });
 
-        it('Should set the content type header to text/plain', function () {
+        it('Should set the content type header to application/x-www-form-urlencoded', function () {
             run();
-            expect(requestStub.getCall(0).args[0].headers['Content-Type']).to.equal('text/plain');
+            expect(requestStub.getCall(0).args[0].headers['Content-Type']).to.equal('application/x-www-form-urlencoded');
         });
 
         it('Should add &cmd=_notify-validate to the end of the body when sending the verification', function () {
-            req.body = 'somebody';
+            req.body = { foo: 'bar'};
             run();
-            expect(request.write.getCall(0).args[0]).to.equal('somebody&cmd=_notify-validate');
+            expect(request.write.getCall(0).args[0]).to.equal('foo=bar&cmd=_notify-validate');
         });
 
         it('Should pass the callback to the https request error event', function () {
@@ -203,7 +208,7 @@ describe('Express IPN', function () {
         });
 
         it('Should pass the parsed ipn content to the callback if the response is VERIFIED', function () {
-            req.body = 'foo=bar';
+            req.body = { foo: 'bar' };
             run();
             respond();
             response.on.getCall(0).args[1]("VERIFIED");
@@ -220,7 +225,7 @@ describe('Express IPN', function () {
         });
 
         it('Should pass the parsed ipn content to the callback if the response is not VERIFIED', function () {
-            req.body = 'foo=bar';
+            req.body = { foo: 'bar' };
             run();
             respond();
             response.on.getCall(0).args[1]("INVALID");

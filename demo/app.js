@@ -7,13 +7,13 @@ var ipn = require('express-ipn');
 var app = express();
 
 app.use(logger('dev'));
-app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({extended: false}));
 app.post('/', ipn.validator(validationHandler));
 
 function validationHandler(err, ipnContent) {
     if (err) {
         console.error("IPN INVALID");
+        console.error(err);
     } else {
         console.log(ipnContent);
     }

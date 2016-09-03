@@ -24,14 +24,14 @@ function acknowledgeReceipt(res) {
 }
 
 function sendVerificationRequest(req, callback, productionMode) {
-    var ipnContent = querystring.parse(req.body);
+    var ipnContent = req.body;
 
     if (productionMode === Boolean(ipnContent.test_ipn)) {
         var modeState = productionMode ? "on" : "off";
         var ipnEnv = productionMode ? "sandbox" : "live";
         callback(new Error("Production mode is "  + modeState + ", cannot handle " + ipnEnv + " IPNs.", ipnContent));
     } else {
-        var body = req.body + '&cmd=_notify-validate';
+        var body = querystring.stringify(ipnContent) + '&cmd=_notify-validate';
         var requestParams = buildRequestParams(productionMode, body);
         var request = https.request(requestParams, handleResponse);
         request.write(body);
@@ -66,7 +66,7 @@ function buildRequestParams(productionMode, body) {
         path: '/cgi-bin/webscr',
         headers: {
             'Content-Length': body.length,
-            'Content-Type': 'text/plain'
+            'Content-Type': 'application/x-www-form-urlencoded'
         }
     };
 }
