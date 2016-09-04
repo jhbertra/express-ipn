@@ -9,7 +9,7 @@
     "body-parser": "~1.15.1",
     "debug": "~2.2.0",
     "express": "~4.13.4",
-    "express-ipn": "^1.0.0",
+    "express-ipn": "^1.0.3",
     "morgan": "~1.7.0"
   }
 }
