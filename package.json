@@ -1,6 +1,6 @@
 {
   "name": "express-ipn",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Simple Express middleware for creating an IPN listener.",
   "main": "index.js",
   "scripts": {
