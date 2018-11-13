@@ -30,16 +30,14 @@ function sendVerificationRequest(req, callback, productionMode) {
         var modeState = productionMode ? "on" : "off";
         var ipnEnv = productionMode ? "sandbox" : "live";
         var error = new Error("Production mode is "  + modeState + ", cannot handle " + ipnEnv + " IPNs.", ipnContent);
-        error.req = req;
-        callback(error);
+        callback(error, null, req);
     } else {
         var body = querystring.stringify(ipnContent) + '&cmd=_notify-validate';
         var requestParams = buildRequestParams(productionMode, body);
         var request = https.request(requestParams, handleResponse);
         request.write(body);
         request.on('error', function(err) {
-          err.req = req;
-          callback(err);
+          callback(err, null, req);
         });
         request.end();
     }
@@ -58,8 +56,7 @@ function sendVerificationRequest(req, callback, productionMode) {
                 callback(null, ipnContent, req);
             } else {
                 var error = new Error("IPN verification failed, message: " + message);
-                error.req = req;
-                callback(error, ipnContent);
+                callback(error, ipnContent, req);
             }
         });
 

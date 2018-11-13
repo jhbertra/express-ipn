@@ -46,7 +46,8 @@ ipn.validator(callback, [productionMode]);
 ```
 
 `callback` will be called when the IPN verification protocol is complete. 
-It will be passed two parameters: `err` and `ipnContent`.  `err` will be an `Error` object if verification fails. If `err` is non null, a field `req` will attach the corresponding request to err. If `err` is null, `req` will be passed to callback as an additional argument, positionally after `ipnContent`. 
+It will be passed three parameters: `err`, `ipnContent`, and `req`.  `err` will be an `Error` object if verification fails. 
+
 Verification will fail under two circumstances:
  
  1. PayPal returned an `INVALID` message in response to the verification request, meaning the ipn is not valid
