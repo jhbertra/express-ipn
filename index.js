@@ -15,7 +15,7 @@ module.exports = {
         return function validateIpn(req, res) {
             acknowledgeReceipt(res);
             sendVerificationRequest(req, callback, productionMode);
-        }
+        };
     }
 };
 
@@ -29,13 +29,16 @@ function sendVerificationRequest(req, callback, productionMode) {
     if (productionMode === Boolean(ipnContent.test_ipn)) {
         var modeState = productionMode ? "on" : "off";
         var ipnEnv = productionMode ? "sandbox" : "live";
-        callback(new Error("Production mode is "  + modeState + ", cannot handle " + ipnEnv + " IPNs.", ipnContent));
+        var error = new Error("Production mode is "  + modeState + ", cannot handle " + ipnEnv + " IPNs.", ipnContent);
+        callback(error, null, req);
     } else {
         var body = querystring.stringify(ipnContent) + '&cmd=_notify-validate';
         var requestParams = buildRequestParams(productionMode, body);
         var request = https.request(requestParams, handleResponse);
         request.write(body);
-        request.on('error', callback);
+        request.on('error', function(err) {
+          callback(err, null, req);
+        });
         request.end();
     }
 
@@ -50,9 +53,10 @@ function sendVerificationRequest(req, callback, productionMode) {
             var message = responseData.join('');
 
             if (message === 'VERIFIED') {
-                callback(null, ipnContent);
+                callback(null, ipnContent, req);
             } else {
-                callback(new Error("IPN verification failed, message: " + message), ipnContent)
+                var error = new Error("IPN verification failed, message: " + message);
+                callback(error, ipnContent, req);
             }
         });
 

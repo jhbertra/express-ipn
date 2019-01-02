@@ -46,7 +46,8 @@ ipn.validator(callback, [productionMode]);
 ```
 
 `callback` will be called when the IPN verification protocol is complete. 
-It will be passed two parameters: `err` and `ipnContent`.  `err` will be an `Error` object if verification fails.
+It will be passed three parameters: `err`, `ipnContent`, and `req`.  `err` will be an `Error` object if verification fails. 
+
 Verification will fail under two circumstances:
  
  1. PayPal returned an `INVALID` message in response to the verification request, meaning the ipn is not valid
@@ -55,7 +56,7 @@ Verification will fail under two circumstances:
  live IPN will be treated as invalid, as non-development servers should not be handling live data.
  
  If verification succeeds, `err` will be null.  The content of the originally received IPN will be parsed as a 
- JavaScript object and passed in the `ipnContent` parameter.
+ JavaScript object and passed in the `ipnContent` parameter. The original request will be passed in the additional `req` parameter. This is useful if, for example, the PayPal `notify_url` variable contains parametric correlation parameters.
 
 `productionMode` is an optional which should be set to `true` when the listener is ready to go into production, and handle
 live payment data.  It defaults to `false`.  Note the in order to handle test IPNs, such as those sent from sandbox 
