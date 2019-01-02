@@ -1,13 +1,13 @@
 # express-ipn
 Create a PayPal IPN listener in minutes with this easy-to-use Express middleware.
 
-##Installation
+## Installation
 
 ```
 $ npm install express-ipn
 ```
 
-##Usage
+## Usage
 
 Mount the middleware on a POST handler on the endpoint where you want you IPN listener to live:
 
@@ -35,10 +35,10 @@ function validationHandler(err, ipnContent) {
 when you are ready to go put your server into production, make the following change:
 ```js
 ...
-app.post('/', ipn.validator(validationHandler), true);
+app.post('/', ipn.validator(validationHandler, true));
 ...
 ```
-##API
+## API
 
 ```js
 var ipn = require('express-ipn');
